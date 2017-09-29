@@ -97,4 +97,14 @@ describe('Param', () => {
         param.delete('foo');
         assert.equal(param.get('foo'), 'bar');
     });
+
+    it('setDefault', () => {
+        let param = new Param({
+            obj: { a: '' },
+        });
+        param.setDefault({
+            foo: 'bar',
+        });
+        assert.equal(param.get('foo'), 'bar');
+    });
 });

@@ -8,6 +8,7 @@ class Param {
     constructor (json) {
         json = json || {};
         this._schema = null;
+        this._default = null;
         if (typeof json !== 'object' || Array.isArray(json)) {
             console.log(`The incoming parameter must be a json`);
             this._data = {};
@@ -60,6 +61,10 @@ class Param {
 
         if (target && typeof target === 'object') {
             target = JSON.parse(JSON.stringify(target));
+        }
+
+        if (this._default && target === null) {
+            target = this._default.get(path);
         }
 
         return target;
@@ -134,6 +139,15 @@ class Param {
             this._schema = null;
             console.warn(`Schema Settings fail because the original data does not meet the requirements`);
         }
+    }
+
+    setDefault (json) {
+        if (typeof json !== 'object' || Array.isArray(json)) {
+            console.log(`The incoming parameter must be a json`);
+            return false;
+        }
+        this._default = new Param(json);
+        return true;
     }
 }
 
