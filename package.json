@@ -11,9 +11,12 @@
     "url": "git+https://github.com/VisualSJ/v-param.git"
   },
   "author": "VisualSJ",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/VisualSJ/v-param/issues"
   },
-  "homepage": "https://github.com/VisualSJ/v-param#readme"
+  "homepage": "https://github.com/VisualSJ/v-param#readme",
+  "dependencies": {
+    "jsen": "^0.6.6"
+  }
 }

@@ -56,7 +56,7 @@ describe('Param', () => {
     it('delete', () => {
         let param = new Param({
             foo: 'bar',
-            a: { b: { c: 0 } }
+            a: { b: { c: 0 } },
         });
 
         param.delete('foo.bar.a');
@@ -72,4 +72,29 @@ describe('Param', () => {
 
     });
 
+    it('setSchema', () => {
+        let param = new Param({
+            foo: 'bar',
+            obj: { a: '' },
+        });
+
+        param.setSchema({
+            'properties': {
+                foo: {
+                    type: 'string',
+                },
+                obj: {
+                    type: 'object',
+                    properties: {
+                        a: { type: 'string' }
+                    },
+                    required: [ 'a' ],
+                }
+            },
+            required: [ 'foo', 'obj' ],
+        });
+
+        param.delete('foo');
+        assert.equal(param.get('foo'), 'bar');
+    });
 });

@@ -1,23 +1,27 @@
 'use strict';
 
+const jsen = require('jsen');
 const utils = require('./lib/utils');
 
 class Param {
 
     constructor (json) {
         json = json || {};
+        this._schema = null;
         if (typeof json !== 'object' || Array.isArray(json)) {
             console.log(`The incoming parameter must be a json`);
             this._data = {};
+            this._cache = JSON.string;
             return;
         }
-        this._data = JSON.parse(JSON.stringify(json));
+        this._cache = JSON.stringify(json);
+        this._data = JSON.parse(this._cache);
     }
 
     append (json) {
         if (typeof json !== 'object' || Array.isArray(json)) {
             console.log(`The incoming parameter must be a json`);
-            return;
+            return false;
         }
         Object.keys(json).forEach((key) => {
             let value = json[key];
@@ -27,6 +31,18 @@ class Param {
                 this._data[key] = value;
             }
         });
+
+        if (this._schema) {
+            let error = this._schema(this._data);
+            if (error === false) {
+                console.warn(this._schema.errors);
+                this._data = JSON.parse(this._cache);
+                return false;
+            } 
+        }
+
+        this._cache = JSON.stringify(this._data);
+        return true;
     }
 
     get (path) {
@@ -68,6 +84,17 @@ class Param {
             }
             target = target[current];
         });
+
+        if (this._schema) {
+            let error = this._schema(this._data);
+            if (error === false) {
+                console.warn(this._schema.errors);
+                this._data = JSON.parse(this._cache);
+                return false;
+            } 
+        }
+
+        this._cache = JSON.stringify(this._data);
         return true;
     }
 
@@ -81,8 +108,33 @@ class Param {
         if (target && typeof target === 'object') {
             delete target[last];
         }
+
+        if (this._schema) {
+            let error = this._schema(this._data);
+            if (error === false) {
+                console.warn(this._schema.errors);
+                this._data = JSON.parse(this._cache);
+                return false;
+            } 
+        }
+
+        this._cache = JSON.stringify(this._data);
+        return true;
     }
 
+    setSchema (schema, options) {
+        options = options || {};
+        options.version = options.version || 'draft-06';
+        // options.errorHandler: function(){}, options.formats: {}
+        this._schema = new jsen(schema, options);
+
+        let error = this._schema(this._data);
+        if (error === false) {
+            console.warn(this._schema.errors);
+            this._schema = null;
+            console.warn(`Schema Settings fail because the original data does not meet the requirements`);
+        }
+    }
 }
 
 module.exports = Param;
