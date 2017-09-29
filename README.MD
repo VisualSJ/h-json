@@ -44,3 +44,21 @@ param.setSchema({
 param.delete('foo'); // print warn info
 console.log(param.get('foo')); // 'bar'
 ```
+
+## default
+
+可以给 param 设置一个默认值，在找不到数据的时候将会使用默认数据
+
+```javascript
+const Param = require('v-param');
+
+let param = new Param({
+    foo: 'bar',
+});
+
+param.setDefault({
+    foo2: 'bar2'
+});
+
+console.log(param.get('foo2')); // 'bar2'
+```
