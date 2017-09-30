@@ -10,9 +10,9 @@ class Param {
         this._schema = null;
         this._default = null;
         if (typeof json !== 'object' || Array.isArray(json)) {
-            console.log(`The incoming parameter must be a json`);
             this._data = {};
             this._cache = JSON.string;
+            console.warn(`The incoming parameter must be a json`);
             return;
         }
         this._cache = JSON.stringify(json);
@@ -21,8 +21,7 @@ class Param {
 
     append (json) {
         if (typeof json !== 'object' || Array.isArray(json)) {
-            console.log(`The incoming parameter must be a json`);
-            return false;
+            return Promise.reject(`The incoming parameter must be a json`);
         }
         Object.keys(json).forEach((key) => {
             let value = json[key];
@@ -36,14 +35,13 @@ class Param {
         if (this._schema) {
             let error = this._schema(this._data);
             if (error === false) {
-                console.warn(this._schema.errors);
                 this._data = JSON.parse(this._cache);
-                return false;
+                return Promise.reject(this._schema.errors);
             } 
         }
 
         this._cache = JSON.stringify(this._data);
-        return true;
+        return Promise.resolve();
     }
 
     get (path) {
@@ -93,14 +91,13 @@ class Param {
         if (this._schema) {
             let error = this._schema(this._data);
             if (error === false) {
-                console.warn(this._schema.errors);
                 this._data = JSON.parse(this._cache);
-                return false;
+                return Promise.reject(this._schema.errors);
             } 
         }
 
         this._cache = JSON.stringify(this._data);
-        return true;
+        return Promise.resolve();
     }
 
     delete (path) {
@@ -117,37 +114,35 @@ class Param {
         if (this._schema) {
             let error = this._schema(this._data);
             if (error === false) {
-                console.warn(this._schema.errors);
                 this._data = JSON.parse(this._cache);
-                return false;
+                return Promise.reject(this._schema.errors);
             } 
         }
 
         this._cache = JSON.stringify(this._data);
-        return true;
+        return Promise.resolve();
     }
 
     setSchema (schema, options) {
         options = options || {};
         options.version = options.version || 'draft-06';
         // options.errorHandler: function(){}, options.formats: {}
-        this._schema = new jsen(schema, options);
+        let _schema = new jsen(schema, options);
 
-        let error = this._schema(this._data);
+        let error = _schema(this._data);
         if (error === false) {
-            console.warn(this._schema.errors);
-            this._schema = null;
-            console.warn(`Schema Settings fail because the original data does not meet the requirements`);
+            return Promise.reject(_schema.errors);
         }
+        this._schema = _schema;
+        return Promise.resolve();
     }
 
     setDefault (json) {
         if (typeof json !== 'object' || Array.isArray(json)) {
-            console.log(`The incoming parameter must be a json`);
-            return false;
+            return Promise.reject(`The incoming parameter must be a json`);
         }
         this._default = new Param(json);
-        return true;
+        return Promise.resolve();
     }
 }
 

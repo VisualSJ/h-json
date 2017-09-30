@@ -53,6 +53,17 @@ describe('Param', () => {
         assert.equal(param.get('a.b.c'), null);
     });
 
+    it('append - Incoming wrong data', (done) => {
+        let param = new Param({
+            foo: 'bar',
+        });
+        param.append('').then(() => {
+            done('Failure to catch error');
+        }).catch((error) => {
+            done();
+        });
+    });
+
     it('delete', () => {
         let param = new Param({
             foo: 'bar',
@@ -94,8 +105,71 @@ describe('Param', () => {
             required: [ 'foo', 'obj' ],
         });
 
-        param.delete('foo');
+        param.delete('foo').catch(() => {});
         assert.equal(param.get('foo'), 'bar');
+    });
+
+    it('setSchema - The metadata is not up to standard', (done) => {
+        let param = new Param({
+            obj: { a: '' },
+        });
+        param.setSchema({
+            'properties': {
+                foo: {
+                    type: 'string',
+                },
+            },
+            required: [ 'foo' ],
+        })
+        .then(() => {
+            done('Failure to catch error');
+        }).catch((error) => {
+            done();
+        });
+    });
+
+    it('setSchema - append', (done) => {
+        let param = new Param({
+            foo: '',
+        });
+        param.setSchema({
+            'properties': {
+                foo: {
+                    type: 'string',
+                },
+            },
+            required: [ 'foo' ],
+        }).catch((error) => {
+            done(`Set the sechema error`);
+        });
+        param.append({
+            foo: {},
+        }).then(() => {
+            done('Failure to catch error');
+        }).catch(() => {
+            done();
+        });
+    });
+
+    it('setSchema - set', (done) => {
+        let param = new Param({
+            foo: '',
+        });
+        param.setSchema({
+            'properties': {
+                foo: {
+                    type: 'string',
+                },
+            },
+            required: [ 'foo' ],
+        }).catch((error) => {
+            done(`Set the sechema error`);
+        });
+        param.set('foo', {}).then(() => {
+            done('Failure to catch error');
+        }).catch(() => {
+            done();
+        });
     });
 
     it('setDefault', () => {
