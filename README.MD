@@ -1,5 +1,7 @@
 # PARAM 参数管理
 
+  [![NPM Version][npm-image]][npm-url]
+
 ## 基本用法
 
 这是一个存放获取数据的容器
@@ -98,3 +100,9 @@ param.setDefault({
 
 console.log(param.get('foo2')); // 'bar2'
 ```
+## License
+
+  [MIT](LICENSE)
+
+[npm-image]: https://img.shields.io/npm/v/v-param.svg
+[npm-url]: https://npmjs.org/package/v-param
