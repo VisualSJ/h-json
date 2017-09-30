@@ -19,6 +19,42 @@ param.append({
 console.log(param.get('a.b')); // 1
 ```
 
+## 抓取错误信息 (promise)
+
+为了错误信息更加清晰，我们使用了 promise 来处理错误
+
+```javascript
+const Param = require('v-param');
+
+let param = new Param({
+    foo: 'bar',
+});
+
+param.append('').catch((error) => {
+    console.log(error); // somethings
+});
+
+param.setSchema({
+    properties: {
+        foo: { type: 'string', },
+        bar: { type: 'string', }
+    },
+    required: [ 'foo', 'bar' ],
+}).catch((error) => {
+    console.log(error); // somethings
+});
+
+param.set('foo', {}).catch((error) => {
+    console.log(error); // somethings
+});
+
+param.delete('foo').catch((error) => {
+    console.log(error); // somethings
+});
+
+```
+**get 接口直接返回数据**
+
 ## schema
 
 使用了 jsen 来校验数据正确性

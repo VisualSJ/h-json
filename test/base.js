@@ -90,7 +90,7 @@ describe('Param', () => {
         });
 
         param.setSchema({
-            'properties': {
+            properties: {
                 foo: {
                     type: 'string',
                 },
@@ -114,7 +114,7 @@ describe('Param', () => {
             obj: { a: '' },
         });
         param.setSchema({
-            'properties': {
+            properties: {
                 foo: {
                     type: 'string',
                 },
@@ -133,7 +133,7 @@ describe('Param', () => {
             foo: '',
         });
         param.setSchema({
-            'properties': {
+            properties: {
                 foo: {
                     type: 'string',
                 },
@@ -156,7 +156,7 @@ describe('Param', () => {
             foo: '',
         });
         param.setSchema({
-            'properties': {
+            properties: {
                 foo: {
                     type: 'string',
                 },
